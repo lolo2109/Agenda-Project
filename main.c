@@ -3,6 +3,10 @@
 #include "functions.h"
 #include <stdbool.h>
 
+// Recopie de functions.c -> problème d'implémentation (#include "functions.h")
+
+//-----------------------------------------------------------------------------
+
 cell* createcell(int val,int taille){
     cell* newcell = malloc(sizeof(cell));
     (*newcell).value=val;
@@ -79,10 +83,8 @@ void place_before(cell_list* l, cell* c){
             for(int i =(*c).lvl+1; i<= (*l).level; i+=1){
                 free(alloue[i]);
             }
-
         }}
 }
-
 
 void cell_listhd_add(cell_list* l, int val, int taille){
     if(taille <= (*l).level){
@@ -208,33 +210,34 @@ void print_list_alligne(cell_list* l){
     free(M);
 }
 
+//-----------------------------------------------------------------------------
+
+
 int main() {
 
-    cell* test1 = createcell(1,3);
-
-
+    // Creation de la liste et initialisation avec des valeurs
+    
     cell_list* list = create_cell_list(6);
+    
     cell_listhd_add(list, 91,2);
     cell_listhd_add(list, 1,0);
-
     cell_listhd_add(list, 4,2);
-
-
     cell_listhd_add(list, 59,4);
     cell_listhd_add(list, 56,2);
     cell_listhd_add(list, 32,4);
     cell_listhd_add(list, 31,1);
     cell_listhd_add(list, 25,0);
-
     cell_listhd_add(list, 18,3);
 
+    // Test des fonctionnalités
+    
     print_list(list);
     printf("\n");
     print_list_alligne(list);
     print_list_level(list, 2);
+    
     free_cell(test1);
     free_cell_list(list);
-
 
 return 0;
 }
