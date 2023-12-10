@@ -3,6 +3,8 @@
 #include "functions.h"
 #include <stdbool.h>
 
+
+
 cell* createcell(int val,int taille){
     cell* newcell = malloc(sizeof(cell));
     (*newcell).value=val;
@@ -14,10 +16,12 @@ cell* createcell(int val,int taille){
     return newcell;
 }
 
+
 void free_cell(cell* cell){
     free((*cell).next);
     free(cell);
 }
+
 
 cell_list* create_cell_list(int lvlmax){
     cell** tab = malloc((lvlmax+1)*sizeof(cell*));
@@ -30,6 +34,7 @@ cell_list* create_cell_list(int lvlmax){
     return list;
 }
 
+
 void cell_listsort_add(cell_list* l, int val, int taille){
     if(taille <= (*l).level){
 
@@ -40,10 +45,10 @@ void cell_listsort_add(cell_list* l, int val, int taille){
             cell* c = createcell(val, taille);
             place_before(l,c);
         }
-
     }
     else printf("cellule trop grande\n");
 }
+
 
 void place_before(cell_list* l, cell* c){
     cell *current_cell = (*l).head[0];
@@ -103,6 +108,7 @@ void cell_listhd_add(cell_list* l, int val, int taille){
     else printf("cellule trop grande\n");
 }
 
+
 void free_cell_profond(cell* c){
     if((*c).next[0] == NULL){
         free_cell(c);
@@ -112,6 +118,7 @@ void free_cell_profond(cell* c){
         free_cell(c);
     }
 }
+
 
 void free_cell_list(cell_list* l){
     if((*l).head[0] == NULL){
@@ -124,6 +131,7 @@ void free_cell_list(cell_list* l){
         free(l);
     }
 }
+
 
 void print_list_level(cell_list* l, int lvl){
     if(lvl<=(*l).level){
@@ -138,11 +146,13 @@ void print_list_level(cell_list* l, int lvl){
     else printf("pas de level: %d pour la liste donnée\n", lvl);
 }
 
+
 void print_list(cell_list* l){
     for(int i=0; i< (*l).level; i+=1){
         print_list_level(l, i);
     }
 }
+
 
 int cell_list_length(cell_list* l, int i){
     int k = 0;
@@ -153,6 +163,7 @@ int cell_list_length(cell_list* l, int i){
     }
     return k;
 }
+
 
 void print_list_alligne(cell_list* l){
     int len = cell_list_length(l, 0);
