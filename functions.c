@@ -4,12 +4,12 @@
 #include <stdbool.h>
 
 
-
+// Creation d'une cellule et initialisation de ses pointeurs
 cell* createcell(int val,int taille){
     cell* newcell = malloc(sizeof(cell));
     (*newcell).value=val;
     (*newcell).lvl = taille;
-    (*newcell).next= (cell**) malloc((taille+1) * sizeof(cell*));
+    (*newcell).next= (cell**) malloc((taille+1) * sizeof(cell*)); // tableau dynamique de la taille du niveau ùax de la cellule
     for(int i = 0; i<=taille; i+=1){
         (*newcell).next[i] = NULL;
     }
@@ -23,6 +23,7 @@ void free_cell(cell* cell){
 }
 
 
+// Creation d'une liste en fonction de son niveau max, tableau dynamique tab assigné au head
 cell_list* create_cell_list(int lvlmax){
     cell** tab = malloc((lvlmax+1)*sizeof(cell*));
     for(int i = 0; i<=lvlmax; i+=1){
@@ -35,60 +36,71 @@ cell_list* create_cell_list(int lvlmax){
 }
 
 
+// Ajoute une cellule à sa position correcte en fonction de sa valeur (ordre croissant)
 void cell_listsort_add(cell_list* l, int val, int taille){
     if(taille <= (*l).level){
 
         if((*l).head[0]->value >= val){
-           cell_listhd_add(l,val,taille);
+           cell_listhd_add(l,val,taille); // appel à cell_listhd_add pour ajouter en tête
         }
         else {
             cell* c = createcell(val, taille);
-            place_before(l,c);
+            place_before(l,c); // appel à place_before pour ajouter avant la première cellule de valeur supérieure ou égale à val
         }
     }
     else printf("cellule trop grande\n");
 }
 
 
+// Place la cellule avant la première cellule de valeur supérieure ou égale à val
 void place_before(cell_list* l, cell* c){
-    cell *current_cell = (*l).head[0];
-    while (current_cell->value < c->value && current_cell->next[0] != NULL) {
-        current_cell = current_cell->next[0];
+    cell *current_cell = (*l).head[0]; // Cellule courante initialisée au head
 
+    // Tant que la valeur courante est inférieure à la valeur de la cellule
+    // à insérer et que ce n'est pas la dernière cellule, la cellule courante avance
+    while (current_cell->value < c->value && current_cell->next[0] != NULL) { 
+        current_cell = current_cell->next[0];
         }
+
+    
+    // Cas où la cellule est à insérer à la fin de la liste
     if(current_cell->next[0] == NULL && c->value>current_cell->value) {
         current_cell->next[0] = c;
         for(int i= 0; i<=(*c).lvl; i+=1){
             (*c).next[i] = NULL;
     }}
+
+    // Cas classique ( cellule dans le corps de la liste )
     else{
-    if (c->value <= current_cell->value) {
-        for(int i= 0; i<=(*c).lvl; i+=1){
-            while(i<=current_cell->lvl){
+        for(int i= 0; i<=(*c).lvl; i+=1){ // Parcours des niveaux de la cellule
+            while(i<=current_cell->lvl){ // Cas où les niveaux sont inf ou égaux à ceux de la cellule devant la cellule a placer
                 (*c).next[i] = current_cell;
                 break;
             }
-            while(current_cell->next[i]==NULL && current_cell->next[0]!=NULL){
+            while(current_cell->lvl<=i && current_cell->next[0]!=NULL){ // Recherche des prochaines cellules sur le meme niveau actuel
                 current_cell = current_cell->next[0];
             }
-            if(current_cell->next[0]==NULL){
+            if(current_cell->next[0]==NULL){ // Si aucune autre cellule sur le meme niveau -> pointeur sur NULL
                 (*c).next[i] = NULL;
             }
             else{
                 (*c).next[i] = current_cell;}
         }
-        cell** alloue = malloc(((*l).level+1)*sizeof(cell*));
-        for(int i= 0; i<=(*c).lvl; i+=1){
+
+        // Allocation mémoire des niveaux de la cellule
+        cell** alloue = malloc(((*l).level+1)*sizeof(cell*)); 
+        for(int i= 0; i<=(*c).lvl; i+=1){ 
             alloue[i] = c;
         }
         for(int i =(*c).lvl+1; i<= (*l).level; i+=1){
             free(alloue[i]);
+            (*c).next = alloue;
         }
-
-    }}
+    }
 }
 
 
+// Ajout d'une cellule ne tête de liste
 void cell_listhd_add(cell_list* l, int val, int taille){
     if(taille <= (*l).level){
         cell* c = createcell(val, taille);
@@ -133,11 +145,12 @@ void free_cell_list(cell_list* l){
 }
 
 
+// Affichage d'un niveau de la liste
 void print_list_level(cell_list* l, int lvl){
     if(lvl<=(*l).level){
         printf("[list head_%d @-]", lvl);
         cell* stock_p = (*l).head[lvl];
-        while(stock_p != NULL){
+        while(stock_p != NULL){ // Parcours de la liste jusqu'à la fin du niveau
             printf("-->[ %d|@-]", (*stock_p).value);
             stock_p = (*stock_p).next[lvl];
         }
@@ -153,30 +166,35 @@ void print_list(cell_list* l){
     }
 }
 
-
+// Donne le nombre de cellules sur un niveau i donné
 int cell_list_length(cell_list* l, int i){
     int k = 0;
     cell* stock_p = (*l).head[i];
-    while(stock_p != NULL){
+    while(stock_p != NULL){ // Parcours de la liste jusqu'à la fin du niveau
         stock_p = (*stock_p).next[i];
         k+=1;
     }
     return k;
 }
 
-
+// Affiche la liste en alignant les cellules verticalement
 void print_list_alligne(cell_list* l){
-    int len = cell_list_length(l, 0);
+    int len = cell_list_length(l, 0); // On récupère la longueur de la liste
+
+    // Variables initialisées
     int k = 0;
     int log = 0;
     int count_log= 0;
+
+    // Allocation mémoire 
     int** M = (int**) malloc(((*l).level+1)*sizeof(int*));
     for(int i=0; i<= (*l).level; i+=1){
         M[i] = (int*) malloc(len*sizeof(int));
     }
     cell* stock_p = (*l).head[0];
     printf("[list head_0 @-]");
-    while(stock_p != NULL){
+    while(stock_p != NULL){ // Parcours de la liste
+        // Matrice M remplie avec les count_log
         for(int i = 0; i<= (*l).level; i+=1){
             if(i<(*stock_p).lvl+1){
                 count_log = 0;
@@ -191,11 +209,14 @@ void print_list_alligne(cell_list* l){
                 M[i][k] = -1;
             }
         }
-        printf("-->[ %d|@-]", (*stock_p).value);
+        // Affichage du niveau 0
+        printf("-->[ %d|@-]", (*stock_p).value); 
         stock_p = (*stock_p).next[0];
         k+=1;
     }
     printf("-->NULL\n");
+
+    // Affichage des autres niveaux
     for(int i = 1; i<= (*l).level; i+=1){
         printf("[list head_%d @-]", i);
         stock_p = (*l).head[i];
