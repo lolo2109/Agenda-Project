@@ -239,3 +239,52 @@ void print_list_alligne(cell_list* l){
     }
     free(M);
 }
+
+//fonction qui crée le tableau qui définiera la profondeur des cellules
+int* tableau_niveaux (int n) {
+    int compte = 1;
+    int taille = (pow(2,n) - 1); //taille de la liste
+    int* tab = (int *) calloc(taille , sizeof(int)); //définition du tableau initialisé avec des zéros
+    for (int i = 1; i < n; i++) {
+        while (compte < (taille)) {
+            int temp = pow(2,i);
+            if ((compte+1) % (temp) == 0) { 
+                tab[compte]++;  //si le numéro de la case du tableau et divisible par 2^i, alors cette case prend +1
+            }
+            compte++;
+        }
+        compte = 0;
+    }
+    tab[taille]=-1;
+    return tab;
+}
+
+//fonction ajoute les cellules avec leur profondeur définies par la fonction précédente à une liste
+void list_balanced(cell_list* l, int val){
+    int* niveaux = tableau_niveaux(val); //définition du tableau
+    int taille = pow(2,val)-1;
+    for (int i = 0; i < taille ; i++){
+        cell_listhd_add(l, taille-i, niveaux[i]); //ajout des cellules
+    }
+}
+
+//fonction de recherche classique qui parcours le niveau 0
+void search_classic(cell_list* l, int val){
+    cell* temp=(*l).head[0]; //pointeur initialisé au niveau 0
+    int stop = pow(2,(*l).level)-1; 
+    if (val > stop){
+        printf("the value %d is not found in the list\n", val); //vérification de la présence de la valeur recherchée
+    }
+    else{
+        for (int i = 0; i < stop; i++) {
+            if ((*temp).value == val) {
+                printf("the value %d is at the index %d\n", val, i);
+                break;
+            }
+            temp = (*temp).next[0]; //incrémentation du pointeur qui parcours les cellules
+        }
+    }
+}
+
+
+
