@@ -44,3 +44,9 @@ void print_list_alligne(cell_list* l);
 void place_before(cell_list* l, cell* c);
 
 void cell_listsort_add(cell_list* l, int val, int taille);
+
+int* tableau_niveaux (int n);
+
+void list_balanced(cell_list* l, int val);
+
+void search_classic(cell_list* l, int val);
