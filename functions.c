@@ -304,7 +304,7 @@ void search_classic(cell_list* l, int val){
                 break;
             }
             old_temp = temp;
-            temp = (*temp).next[0];
+            temp = (*temp).next[i];
         }
     }
     printf("the value %d is not found in the list", val);
