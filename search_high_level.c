@@ -5,7 +5,7 @@ int search_high_level(cell_list* l, int val){
         int stop = cell_list_length(l, i);
         for (int j = (*temp).value/pow(2,i)-1; j < stop; j++) {
             if ((*temp).value == val) {
-                //printf("the value %d is at the index %d of level %d", val, j, i);
+                printf("the value %d is at the index %d of level %d", val, j, i);
                 return 0;
             }
             if((*temp).value > val){
@@ -20,6 +20,6 @@ int search_high_level(cell_list* l, int val){
             temp = (*temp).next[0];
         }
     }
-    //printf("the value %d is not found in the list", val);
+    printf("the value %d is not found in the list", val);
     return 0;
 }
